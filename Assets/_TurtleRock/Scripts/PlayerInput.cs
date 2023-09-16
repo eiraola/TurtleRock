@@ -10,6 +10,7 @@ public class PlayerInput : ScriptableObject, IPlayerActions
     //public
     public event Action<Vector2> MovementEvent;
     public event Action JumpEvent;
+    public event Action LaunchEvent;
     public void OnEnable()
     {
         Initialize();
@@ -33,6 +34,14 @@ public class PlayerInput : ScriptableObject, IPlayerActions
         if (context.performed)
         {
             JumpEvent.Invoke();
+        }
+    }
+
+    public void OnLaunch(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            LaunchEvent.Invoke();
         }
     }
 }

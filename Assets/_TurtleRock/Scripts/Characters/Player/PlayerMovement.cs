@@ -30,7 +30,11 @@ public class PlayerMovement : MonoBehaviour
         _playerInput.MovementEvent += SetDesiredDirection;
         _playerInput.JumpEvent += Jump;
     }
-
+    private void OnDisable()
+    {
+        _playerInput.MovementEvent -= SetDesiredDirection;
+        _playerInput.JumpEvent -= Jump;
+    }
     private void FixedUpdate()
     {
         SetOwnerDirection();
@@ -50,9 +54,14 @@ public class PlayerMovement : MonoBehaviour
     /// </summary>
     private void SetOwnerDirection()
     {
-         ownerRB.velocity = (DirectionToCameraVector() * movementSpeed + CurrentVerticalSpeed());
+        Vector3 finalDirection = DirectionToCameraVector();
+        RotatePlayerTowardsMovement(finalDirection);
+         ownerRB.velocity = (finalDirection * movementSpeed + CurrentVerticalSpeed());
     }
-
+    private void RotatePlayerTowardsMovement(Vector3 direction)
+    {
+        transform.LookAt(transform.position +direction);
+    }
     /// <summary>
     /// Returns the direction vector in the coordinates of the camera.
     /// </summary>
@@ -105,5 +114,4 @@ public class PlayerMovement : MonoBehaviour
         }
         currentVerticalDirection = Vector3.up * Mathf.Sqrt(2.0f * gravityForce * maxJumpHeigth);
     }
-
 }
