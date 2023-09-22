@@ -53,6 +53,24 @@ public partial class @InputActionsAsset : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwapEquipLeft"",
+                    ""type"": ""Button"",
+                    ""id"": ""fb6d1e0d-061f-4745-9369-60e4b370f454"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwapEquipRigth"",
+                    ""type"": ""Button"",
+                    ""id"": ""1b5c3ae3-64c6-47ec-886f-2b1610ee1c19"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -187,6 +205,28 @@ public partial class @InputActionsAsset : IInputActionCollection2, IDisposable
                     ""action"": ""Launch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""93e3b7a8-efb5-45c6-bcd2-4baa44e7a4a1"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwapEquipLeft"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""813bb3fc-c97a-4b25-a3f2-d57601e5ad09"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SwapEquipRigth"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -210,6 +250,8 @@ public partial class @InputActionsAsset : IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Launch = m_Player.FindAction("Launch", throwIfNotFound: true);
+        m_Player_SwapEquipLeft = m_Player.FindAction("SwapEquipLeft", throwIfNotFound: true);
+        m_Player_SwapEquipRigth = m_Player.FindAction("SwapEquipRigth", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -272,6 +314,8 @@ public partial class @InputActionsAsset : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Launch;
+    private readonly InputAction m_Player_SwapEquipLeft;
+    private readonly InputAction m_Player_SwapEquipRigth;
     public struct PlayerActions
     {
         private @InputActionsAsset m_Wrapper;
@@ -279,6 +323,8 @@ public partial class @InputActionsAsset : IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Launch => m_Wrapper.m_Player_Launch;
+        public InputAction @SwapEquipLeft => m_Wrapper.m_Player_SwapEquipLeft;
+        public InputAction @SwapEquipRigth => m_Wrapper.m_Player_SwapEquipRigth;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -297,6 +343,12 @@ public partial class @InputActionsAsset : IInputActionCollection2, IDisposable
                 @Launch.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaunch;
                 @Launch.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaunch;
                 @Launch.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnLaunch;
+                @SwapEquipLeft.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapEquipLeft;
+                @SwapEquipLeft.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapEquipLeft;
+                @SwapEquipLeft.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapEquipLeft;
+                @SwapEquipRigth.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapEquipRigth;
+                @SwapEquipRigth.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapEquipRigth;
+                @SwapEquipRigth.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnSwapEquipRigth;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -310,6 +362,12 @@ public partial class @InputActionsAsset : IInputActionCollection2, IDisposable
                 @Launch.started += instance.OnLaunch;
                 @Launch.performed += instance.OnLaunch;
                 @Launch.canceled += instance.OnLaunch;
+                @SwapEquipLeft.started += instance.OnSwapEquipLeft;
+                @SwapEquipLeft.performed += instance.OnSwapEquipLeft;
+                @SwapEquipLeft.canceled += instance.OnSwapEquipLeft;
+                @SwapEquipRigth.started += instance.OnSwapEquipRigth;
+                @SwapEquipRigth.performed += instance.OnSwapEquipRigth;
+                @SwapEquipRigth.canceled += instance.OnSwapEquipRigth;
             }
         }
     }
@@ -328,5 +386,7 @@ public partial class @InputActionsAsset : IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnLaunch(InputAction.CallbackContext context);
+        void OnSwapEquipLeft(InputAction.CallbackContext context);
+        void OnSwapEquipRigth(InputAction.CallbackContext context);
     }
 }

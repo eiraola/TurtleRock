@@ -9,6 +9,7 @@ public class PondSight : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(Constants.TAG_FOOD))
+
         {
             if (_turtle)
             {
@@ -16,5 +17,4 @@ public class PondSight : MonoBehaviour
             }
         }
     }
-
 }

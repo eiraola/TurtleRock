@@ -9,8 +9,10 @@ public class PlayerInput : ScriptableObject, IPlayerActions
     private InputActionsAsset _input;
     //public
     public event Action<Vector2> MovementEvent;
+    public event Action<int> SwapEquipEvent;
     public event Action JumpEvent;
-    public event Action LaunchEvent;
+    public event Action UseEvent;
+    public event Action UnuseEvent;
     public void OnEnable()
     {
         Initialize();
@@ -26,14 +28,14 @@ public class PlayerInput : ScriptableObject, IPlayerActions
     }
     public void OnMove(InputAction.CallbackContext context)
     {
-        MovementEvent.Invoke(context.ReadValue<Vector2>());
+        MovementEvent?.Invoke(context.ReadValue<Vector2>());
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
         if (context.performed)
         {
-            JumpEvent.Invoke();
+            JumpEvent?.Invoke();
         }
     }
 
@@ -41,7 +43,27 @@ public class PlayerInput : ScriptableObject, IPlayerActions
     {
         if (context.performed)
         {
-            LaunchEvent.Invoke();
+            UseEvent?.Invoke();
+        }
+        if (context.canceled)
+        {
+            UnuseEvent?.Invoke();
+        }
+    }
+
+    public void OnSwapEquipLeft(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            SwapEquipEvent?.Invoke(-1);
+        }
+    }
+
+    public void OnSwapEquipRigth(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            SwapEquipEvent?.Invoke(+1);
         }
     }
 }
