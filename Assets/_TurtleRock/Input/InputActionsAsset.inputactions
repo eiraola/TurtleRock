@@ -33,6 +33,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Shoot",
+                    "type": "Button",
+                    "id": "21c11683-6eca-46f5-a750-0b2491c39667",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "SwapEquipLeft",
                     "type": "Button",
                     "id": "fb6d1e0d-061f-4745-9369-60e4b370f454",
@@ -176,7 +185,7 @@
                 {
                     "name": "",
                     "id": "d3688426-bd52-49ca-81ef-4722a3c85bb1",
-                    "path": "<Gamepad>/buttonWest",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -203,6 +212,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "SwapEquipRigth",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5d1f42f2-27dd-41b2-8d09-f77836362448",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

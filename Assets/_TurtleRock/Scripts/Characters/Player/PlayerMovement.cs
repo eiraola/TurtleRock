@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+
 public class PlayerMovement : MonoBehaviour
 {
     [Header("System")]
@@ -10,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("The movement speed per seconds/metters of the player")]
     [SerializeField]
     private float movementSpeed = 10.0f;
+    [Tooltip("The speed that the player will rotate")]
+    [SerializeField]
+    private float rotationSpeed = 10.0f;
     [Tooltip("The collision layers that will be ignored for the player when doing calculations")]
     [SerializeField]
     private LayerMask layersToIgnore = new LayerMask();
@@ -25,18 +29,24 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float maxJumpHeigth = 0.0f;
     private bool isGrounded = true;
+    private bool isAiming = false;
     private Vector2 currentDirection = Vector2.zero;
     private Vector3 currentVerticalDirection = Vector3.zero;
     private Rigidbody ownerRB;
     private CapsuleCollider ownerCollider;
     private float _playerSize = 1.0f;
     private float _playerRadius = 1.0f;
+    private PlayerMovementBase _currentPlayerMovement;
+    private PlayerMovementWalk _playerMovementWalk;
+    private PlayerMovementAim _playerMovementAim;
 
+    public bool IsAiming { get => isAiming; set => isAiming = value; }
 
     private void OnEnable()
     {
         ownerRB = GetComponent<Rigidbody>();
         ownerCollider = GetComponent<CapsuleCollider>();
+        InitializeMovementTypes();
         _playerSize = ownerCollider.bounds.size.y;
         _playerRadius = ownerCollider.radius;
         _playerInput.MovementEvent += SetDesiredDirection;
@@ -50,9 +60,17 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         isGrounded = CheckIfGrounded();
-        SetOwnerDirection();
+        _currentPlayerMovement.OnUpdate();
+        //SetOwnerVelocity();
     }
-
+    private void  InitializeMovementTypes()
+    {
+        _playerMovementWalk = new PlayerMovementWalk();
+        _playerMovementWalk.Init(this);
+        _playerMovementAim = new PlayerMovementAim();
+        _playerMovementAim.Init(this);
+        _currentPlayerMovement = _playerMovementWalk;
+    }
     /// <summary>
     /// Sets the owner desired direction.
     /// </summary>
@@ -65,25 +83,31 @@ public class PlayerMovement : MonoBehaviour
     /// <summary>
     /// Sets the rigidbody component direction so it will follow the ground
     /// </summary>
-    private void SetOwnerDirection()
+    public void SetOwnerVelocity()
     {
         Vector3 finalDirection = DirectionToCameraVector();
         RotatePlayerTowardsMovement(finalDirection);
         ownerRB.velocity = GetExternalAgentSpeed() + (finalDirection * movementSpeed + CurrentVerticalSpeed());
     }
+    public void SetOwnerAimingVelocity()
+    {
+        Vector3 finalDirection = DirectionToCameraVector();
+        RotatePlayerTowardsMovement(finalDirection);
+        ownerRB.velocity = GetExternalAgentSpeed() +  CurrentVerticalSpeed();
+    }
     /// <summary>
     /// Rotates the player to the current direction we are going.
     /// </summary>
     /// <param name="direction"></param>
-    private void RotatePlayerTowardsMovement(Vector3 direction)
+    public void RotatePlayerTowardsMovement(Vector3 direction)
     {
-        transform.LookAt(transform.position +direction);
+        transform.LookAt(transform.position + direction);
     }
     /// <summary>
     /// Returns the direction vector in the coordinates of the camera.
     /// </summary>
     /// <returns>The direction vector</returns>
-    private Vector3 DirectionToCameraVector()
+    public Vector3 DirectionToCameraVector()
     {
         return (CameraToGroundVector(Camera.main.transform.right).normalized * currentDirection.x + CameraToGroundVector(Camera.main.transform.forward).normalized * currentDirection.y);
     }
@@ -172,5 +196,30 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         return Vector3.zero;
+    }
+    public void SwapMovementType(EMovementType newMovementType)
+    {
+        if (newMovementType == _currentPlayerMovement.Type) { return; }
+        _currentPlayerMovement.OnExit();
+        _currentPlayerMovement = GetMovementInstance(newMovementType);
+        if (_currentPlayerMovement == null) { return; }
+        _currentPlayerMovement.OnEnter();
+    }
+    public PlayerMovementBase GetMovementInstance(EMovementType movementType)
+    {
+        switch (movementType)
+        {
+            case EMovementType.None:
+                break;
+            case EMovementType.Walk:
+                return _playerMovementWalk;
+            case EMovementType.Jump:
+                break;
+            case EMovementType.Aim:
+                return _playerMovementAim;
+            default:
+                return null;
+        }
+        return null;
     }
 }

@@ -13,6 +13,7 @@ public class PlayerInput : ScriptableObject, IPlayerActions
     public event Action JumpEvent;
     public event Action UseEvent;
     public event Action UnuseEvent;
+    public event Action ShootEvent;
     public void OnEnable()
     {
         Initialize();
@@ -64,6 +65,14 @@ public class PlayerInput : ScriptableObject, IPlayerActions
         if (context.performed)
         {
             SwapEquipEvent?.Invoke(+1);
+        }
+    }
+
+    public void OnShoot(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            ShootEvent?.Invoke();
         }
     }
 }
